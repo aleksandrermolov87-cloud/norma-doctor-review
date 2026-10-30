@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDb } from "../../../db/index";
 import { responses } from "../../../db/schema";
-import { questions } from "../../questions";
+import { getQuestions } from "../../data";
 
 export const runtime = "edge";
 const verdicts = new Set(["ready", "clarify", "reject", "unsure"]);
@@ -21,6 +21,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
   }
   const marked = answers as Record<string, unknown>;
+  const questions = await getQuestions();
   if (Object.keys(marked).length !== questions.length || questions.some(q => !verdicts.has(String(marked[q.id])))) {
     return NextResponse.json({ error: "All questions must have one valid answer" }, { status: 400 });
   }

@@ -1,6 +1,8 @@
 import Review from "./review";
-import { questions } from "./questions";
+import { getQuestions } from "./data";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+export default async function Home() {
+  const questions = await getQuestions();
   return <Review questions={questions} />;
 }

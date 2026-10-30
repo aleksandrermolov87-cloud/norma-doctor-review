@@ -7,3 +7,9 @@ export const responses = sqliteTable("responses", {
   questionSet: text("question_set").notNull(),
   submittedAt: integer("submitted_at").notNull(),
 });
+
+export const questionSets = sqliteTable("question_sets", {
+  id: text("id").primaryKey(),
+  content: text("content").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+});

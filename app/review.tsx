@@ -18,20 +18,25 @@ export default function Review({ questions }: { questions: readonly Question[] }
   const [error, setError] = useState("");
   const [participantId, setParticipantId] = useState("");
   const storageKey = "norma-question-review-v1";
+  const signature = questions.map(q => q.id).join("|");
 
   useEffect(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(storageKey) || "{}");
+      if (saved.signature !== signature) {
+        setParticipantId(crypto.randomUUID());
+        return;
+      }
       setAnswers(saved.answers || {});
       setIndex(Math.min(Number(saved.index) || 0, questions.length - 1));
       setParticipantId(saved.participantId || crypto.randomUUID());
       if (saved.done) setStatus("done");
     } catch { setParticipantId(crypto.randomUUID()); }
-  }, [questions.length]);
+  }, [signature, questions.length]);
 
   useEffect(() => {
-    if (participantId) localStorage.setItem(storageKey, JSON.stringify({ answers, index, participantId, done: status === "done" }));
-  }, [answers, index, participantId, status]);
+    if (participantId) localStorage.setItem(storageKey, JSON.stringify({ signature, answers, index, participantId, done: status === "done" }));
+  }, [signature, answers, index, participantId, status]);
 
   const count = useMemo(() => questions.filter(q => answers[q.id]).length, [answers, questions]);
   const current = questions[index];

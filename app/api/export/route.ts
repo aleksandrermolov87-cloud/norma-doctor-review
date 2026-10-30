@@ -14,11 +14,11 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401, headers: { "Cache-Control": "no-store" } });
   }
   const rows = await getDb().select().from(responses);
-  const ids = [...new Set(rows.flatMap(row => (JSON.parse(row.questionSet) as { id: string }[]).map(q => q.id)))];
-  const header = ["response_id", "submitted_at", ...ids].map(csvCell).join(",");
-  const lines = rows.map(row => {
+  const header = ["response_id", "submitted_at", "question_id", "question", "answer"].map(csvCell).join(",");
+  const lines = rows.flatMap(row => {
     const answers = JSON.parse(row.answers) as Record<string, string>;
-    return [row.id, new Date(row.submittedAt).toISOString(), ...ids.map(id => answers[id] || "")].map(csvCell).join(",");
+    const questions = JSON.parse(row.questionSet) as { id: string; text: string }[];
+    return questions.map(q => [row.id, new Date(row.submittedAt).toISOString(), q.id, q.text, answers[q.id] || ""].map(csvCell).join(","));
   });
   return new Response([header, ...lines].join("\r\n"), {
     headers: { "Content-Type": "text/csv; charset=utf-8", "Content-Disposition": "attachment; filename=norma-doctor-review.csv", "Cache-Control": "no-store" },
