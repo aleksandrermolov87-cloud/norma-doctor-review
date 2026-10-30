@@ -13,3 +13,11 @@ export const questionSets = sqliteTable("question_sets", {
   content: text("content").notNull(),
   updatedAt: integer("updated_at").notNull(),
 });
+
+export const reasoningResponses = sqliteTable("reasoning_responses", {
+  id: text("id").primaryKey(),
+  participantId: text("participant_id").notNull().unique(),
+  answers: text("answers").notNull(),
+  questionSet: text("question_set").notNull(),
+  submittedAt: integer("submitted_at").notNull(),
+});

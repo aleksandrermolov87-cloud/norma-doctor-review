@@ -15,6 +15,13 @@
       "when": 1793348836902,
       "tag": "0001_overjoyed_tarot",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1793356769830,
+      "tag": "0002_cynical_gambit",
+      "breakpoints": true
     }
   ]
 }
